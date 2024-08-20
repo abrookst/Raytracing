@@ -1,12 +1,16 @@
-#include <iostream>
-#include "color.h"
-#include "point3.h"
-#include "ray.h"
+#include "common.h"
 #include "vector3.h"
+#include "sphere.h"
+#include "hittableList.h"
 
-Color ray_color(Ray& ray){ 
+Color ray_color(Ray& ray, const Hittable& world){ 
+    HitRecord rec;
+    if (world.hit(ray, 0, std::numeric_limits<float>::infinity(), rec)) {
+        return 0.5 * (rec.normal + Color(1,1,1));
+    }
+
     Vector3 unitDirection = unit_vector(ray.direction());
-    auto a = 0.5*(unitDirection.y() + 1.0);
+    float   a = 0.5*(unitDirection.y() + 1.0);
     return (1.0-a)*Color(1.0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.0);
  }
 
@@ -18,10 +22,16 @@ int main() {
     uint16_t imageHeight = int(imageWidth / aspectRatio);
     imageHeight = (imageHeight < 1) ? 1 : imageHeight;
 
+    // World
+    HittableList world;
+
+    world.add(make_shared<Sphere>(Point3(0,0,-1), 0.5));
+    world.add(make_shared<Sphere>(Point3(0,-100.5,-1), 100));
+
     // Camera 
     float focalLength = 1.0;
     float viewportHeight = 2.0;
-    float viewportWidth = viewportHeight * (double(imageWidth)/imageHeight);
+    float viewportWidth = viewportHeight * (float(imageWidth)/imageHeight);
     Point3 cameraCenter = Point3(0,0,0);
 
     // Viewport
@@ -44,10 +54,10 @@ int main() {
         std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
         for (uint16_t i = 0; i < imageWidth; i++) {
             Point3 pixelCenter = pixel00Loc + (i * pixelDeltaU) + (j * pixelDeltaV);
-            auto rayDirection = pixelCenter - cameraCenter;
+            Point3 rayDirection = pixelCenter - cameraCenter;
             Ray r(cameraCenter, rayDirection);
 
-            Color pixelColor = ray_color(r);
+            Color pixelColor = ray_color(r, world);
             write_color(std::cout, pixelColor);
         }
     }

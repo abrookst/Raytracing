@@ -1,8 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include <iostream>
-#include "vector3.h"
+#include "common.h"
 
 class Color : public Vector3 {
     public:
