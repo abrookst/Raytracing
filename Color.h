@@ -8,6 +8,7 @@ class Color : public Vector3 {
     public:
         Color(float vX, float vY, float vZ): Vector3(vX, vY, vZ) {}
         Color(): Vector3(0,0,0) {}
+        Color(Vector3 vec): Vector3(vec) {}
 };
 
 void write_color(std::ostream& out, const Color& pixel_color) {
