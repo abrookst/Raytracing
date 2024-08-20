@@ -1,7 +1,7 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "ray.h"
+#include "common.h"
 
 class HitRecord {
     public: 
@@ -22,7 +22,7 @@ class HitRecord {
 class Hittable {
     public:
         virtual ~Hittable() = default;
-        virtual bool hit(const Ray& r, float rayTMin, float rayTMax, HitRecord& rec) const = 0;
+        virtual bool hit(const Ray& r, Interval rayT, HitRecord& rec) const = 0;
 };
 
 #endif
