@@ -1,28 +1,24 @@
 #include <iostream>
+#include "color.h"
+#include "point3.h"
+#include "vector3.h"
 
 int main() {
 
     // Image
 
-    uint16_t image_width = 640;
-    uint16_t image_height = 480;
+    uint16_t imageWidth = 640;
+    uint16_t imageHeight = 480;
 
     // Render
 
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
-    for (uint16_t j = 0; j < image_height; j++) {
-        std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
-        for (uint16_t i = 0; i < image_width; i++) {
-            float r = float(i) / (image_width-1);
-            float g = float(j) / (image_height-1);
-            float b = 0.0;
-
-            uint8_t ir = int(255 * r);
-            uint8_t ig = int(255 * g);
-            uint8_t ib = int(255 * b);
-
-            std::cout << +ir << ' ' << +ig << ' ' << +ib << '\n';
+    for (uint16_t j = 0; j < imageHeight; j++) {
+        std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
+        for (uint16_t i = 0; i < imageWidth; i++) {
+            Color pixelColor = Color(float(i)/(imageWidth-1), float(j)/(imageHeight-1), 0.0f);
+            write_color(std::cout, pixelColor);
         }
     }
     std::clog << "\rDone.                 " << std::endl;
