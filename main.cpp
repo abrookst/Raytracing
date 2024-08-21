@@ -5,15 +5,11 @@
 #include "hittableList.h"
 
 int main() {
-
-    // Image
-    
-
-
     // World
     HittableList world;
 
     world.add(make_shared<Sphere>(Point3(0,0,-1), 0.5));
+    world.add(make_shared<Sphere>(Point3(1,0,-2), 0.3));
     world.add(make_shared<Sphere>(Point3(0,-100.5,-1), 100));
 
     // Camera
