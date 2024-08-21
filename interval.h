@@ -6,7 +6,7 @@ class Interval {
         float min, max;
         
         Interval(): min(+infinity), max(-infinity) {}
-        Interval(double min, double max) : min(min), max(max) {}
+        Interval(float min, float max) : min(min), max(max) {}
 
         float size() const {
             return max - min;
@@ -18,6 +18,12 @@ class Interval {
 
         bool surrounds(float x) const {
             return min < x && x < max;
+        }
+
+        float clamp(float x) const {
+            if (x < min) return min;
+            if (x > max) return max;
+            return x;
         }
 
         static const Interval empty, universe;

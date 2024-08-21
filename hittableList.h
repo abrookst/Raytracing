@@ -22,7 +22,7 @@ class HittableList : public Hittable {
         bool hit(const Ray& r, Interval rayT, HitRecord& rec)  const override {
             HitRecord tempRecord;
             bool hitAnything = false;
-            double closest = rayT.max;
+            float closest = rayT.max;
 
             for(const shared_ptr<Hittable>& obj : objs){
                 if(obj->hit(r,Interval(rayT.min,closest),tempRecord)){

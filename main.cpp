@@ -16,6 +16,7 @@ int main() {
     Camera mainView;
     mainView.aspectRatio = 4.0f / 3.0f;
     mainView.imageWidth = 640;
+    mainView.samplesPerPixel = 100;
 
     mainView.render(world);
 

@@ -16,9 +16,10 @@ void write_color(std::ostream& out, const Color& pixel_color) {
     float b = pixel_color.z();
 
     // Translate the [0,1] component values to the byte range [0,255].
-    uint8_t rbyte = int(255 * r);
-    uint8_t gbyte = int(255 * g);
-    uint8_t bbyte = int(255 * b);
+    static const Interval intensity(0.000, 0.999);
+    uint8_t rbyte = int(255 * intensity.clamp(r));
+    uint8_t gbyte = int(255 * intensity.clamp(g));
+    uint8_t bbyte = int(255 * intensity.clamp(b));
 
     // Write out the pixel color components.
     out << +rbyte << ' ' << +gbyte << ' ' << +bbyte << '\n';
