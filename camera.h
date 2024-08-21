@@ -10,23 +10,23 @@ public:
     float aspectRatio = 1.0f;
     uint16_t imageWidth = 100;
     uint16_t samplesPerPixel = 10;
+    uint16_t maxDepth = 10;
 
     void render(const Hittable &world)
     {
         initialize();
 
-        std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
-        std::clog << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
+        std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";  
 
         for (uint16_t j = 0; j < imageHeight; j++)
         {
-            std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
+            //std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
             for (uint16_t i = 0; i < imageWidth; i++)
             {
                 Color pixel_color(0,0,0);
                 for (int sample = 0; sample < samplesPerPixel; sample++) {
                     Ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, world);
+                    pixel_color += ray_color(r, maxDepth, world);
                 }
                 write_color(std::cout, pixelSamplesScale * pixel_color);
             }
@@ -46,7 +46,6 @@ private:
     {
         // Image
         imageHeight = int(imageWidth / aspectRatio);
-        std::clog << imageHeight << std::endl;
         imageHeight = (imageHeight < 1) ? 1 : imageHeight;
         pixelSamplesScale = 1.0f / samplesPerPixel;
 
@@ -72,13 +71,13 @@ private:
         // Construct a camera ray originating from the origin and directed at randomly sampled
         // point around the pixel location i, j.
 
-        auto offset = sample_square();
-        auto pixel_sample = pixel00Loc
+        Vector3 offset = sample_square();
+        Vector3 pixel_sample = pixel00Loc
                           + ((i + offset.x()) * pixelDeltaU)
                           + ((j + offset.y()) * pixelDeltaV);
 
-        auto ray_origin = cameraCenter;
-        auto ray_direction = pixel_sample - ray_origin;
+        Point3 ray_origin = cameraCenter;
+        Vector3 ray_direction = pixel_sample - ray_origin;
 
         return Ray(ray_origin, ray_direction);
     }
@@ -88,12 +87,18 @@ private:
         return Vector3(random_float() - 0.5, random_float() - 0.5, 0);
     }
 
-    Color ray_color(Ray &ray, const Hittable &world)
+    Color ray_color(const Ray& ray, uint16_t depth, const Hittable& world)
     {
+        if(depth <=0){
+            return Color(0,0,0);
+        }
+
         HitRecord rec;
-        if (world.hit(ray, Interval(0, infinity), rec))
+        if (world.hit(ray, Interval(0.001, infinity), rec))
         {
-            return 0.5 * (rec.normal + Color(1, 1, 1));
+            
+            Vector3 direction = rec.normal + random_unit_vector();;
+            return 0.5 * ray_color(Ray(rec.p, direction), depth-1, world);
         }
 
         Vector3 unitDirection = unit_vector(ray.direction());

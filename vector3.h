@@ -50,6 +50,14 @@ public:
     {
         return std::sqrt(length_squared());
     }
+
+    static Vector3 random() {
+        return Vector3(random_float(), random_float(), random_float());
+    }
+
+    static Vector3 random(float min, float max) {
+        return Vector3(random_float(min,max), random_float(min,max), random_float(min,max));
+    }
 };
 
 // Vector Utility Functions
@@ -104,6 +112,26 @@ inline Vector3 operator/(const Vector3 &vec, float t)
 inline Vector3 unit_vector(const Vector3 &vec)
 {
     return vec / vec.length();
+}
+
+inline Vector3 random_in_unit_sphere() {
+    while (true) {
+        Vector3 p = Vector3::random(-1,1);
+        if (p.length_squared() < 1)
+            return p;
+    }
+}
+
+inline Vector3 random_unit_vector() {
+    return unit_vector(random_in_unit_sphere());
+}
+
+inline Vector3 random_on_hemisphere(const Vector3& normal) {
+    Vector3 onUnitSphere = random_unit_vector();
+    if (dot(onUnitSphere, normal) > 0.0) // In the same hemisphere as the normal
+        return onUnitSphere;
+    else
+        return -onUnitSphere;
 }
 
 #endif

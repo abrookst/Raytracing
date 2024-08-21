@@ -10,10 +10,23 @@ class Color : public Vector3 {
         Color(Vector3 vec): Vector3(vec) {}
 };
 
+inline void linear_to_gamma(float& linearComponent)
+{
+    if (linearComponent > 0){
+        linearComponent = std::sqrt(linearComponent);
+        return;
+    }
+    linearComponent = 0;
+}
+
 void write_color(std::ostream& out, const Color& pixel_color) {
     float r = pixel_color.x();
     float g = pixel_color.y();
     float b = pixel_color.z();
+
+    linear_to_gamma(r);
+    linear_to_gamma(g);
+    linear_to_gamma(b);
 
     // Translate the [0,1] component values to the byte range [0,255].
     static const Interval intensity(0.000, 0.999);
