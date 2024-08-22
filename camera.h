@@ -4,6 +4,7 @@
 #include "common.h"
 #include "hittable.h"
 #include "material.h"
+#include <fstream>
 
 class Camera
 {
@@ -12,27 +13,32 @@ public:
     uint16_t imageWidth = 100;
     uint16_t samplesPerPixel = 10;
     uint16_t maxDepth = 10;
+    double fov = 90;
 
-    void render(const Hittable &world)
+    void render(const std::string filename, const Hittable &world)
     {
         initialize();
 
-        std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";  
+        std::ofstream ofs(filename, std::ios::binary);
+
+        ofs << "P3\n"
+            << imageWidth << ' ' << imageHeight << "\n255\n";
 
         for (uint16_t j = 0; j < imageHeight; j++)
         {
-            std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
+            std::clog << "\rScanlines remaining for " << filename << ": " << (imageHeight - j) << ' ' << std::flush;
             for (uint16_t i = 0; i < imageWidth; i++)
             {
-                Color pixel_color(0,0,0);
-                for (int sample = 0; sample < samplesPerPixel; sample++) {
+                Color pixel_color(0, 0, 0);
+                for (int sample = 0; sample < samplesPerPixel; sample++)
+                {
                     Ray r = get_ray(i, j);
                     pixel_color += ray_color(r, maxDepth, world);
                 }
-                write_color(std::cout, pixelSamplesScale * pixel_color);
+                write_color(ofs, pixelSamplesScale * pixel_color);
             }
         }
-        std::clog << "\rDone.                 " << std::endl;
+        std::clog << "\rRender for " << filename << " has been completed." << std::endl;
     }
 
 private:
@@ -52,8 +58,10 @@ private:
 
         // Camera
         cameraCenter = Point3(0, 0, 0);
+        float theta = degrees_to_radians(fov);
+        float h = std::tan(theta / 2);
         float focalLength = 1.0;
-        float viewportHeight = 2.0;
+        float viewportHeight = 2.0 * h * focalLength;
         float viewportWidth = viewportHeight * (float(imageWidth) / imageHeight);
 
         // Viewport
@@ -68,14 +76,13 @@ private:
         pixel00Loc = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
     }
 
-    Ray get_ray(uint16_t i, uint16_t j) const {
+    Ray get_ray(uint16_t i, uint16_t j) const
+    {
         // Construct a camera ray originating from the origin and directed at randomly sampled
         // point around the pixel location i, j.
 
         Vector3 offset = sample_square();
-        Vector3 pixel_sample = pixel00Loc
-                          + ((i + offset.x()) * pixelDeltaU)
-                          + ((j + offset.y()) * pixelDeltaV);
+        Vector3 pixel_sample = pixel00Loc + ((i + offset.x()) * pixelDeltaU) + ((j + offset.y()) * pixelDeltaV);
 
         Point3 ray_origin = cameraCenter;
         Vector3 ray_direction = pixel_sample - ray_origin;
@@ -83,15 +90,17 @@ private:
         return Ray(ray_origin, ray_direction);
     }
 
-    Vector3 sample_square() const {
+    Vector3 sample_square() const
+    {
         // Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
         return Vector3(random_float() - 0.5, random_float() - 0.5, 0);
     }
 
-    Color ray_color(const Ray& ray, uint16_t depth, const Hittable& world)
+    Color ray_color(const Ray &ray, uint16_t depth, const Hittable &world)
     {
-        if(depth <=0){
-            return Color(0,0,0);
+        if (depth <= 0)
+        {
+            return Color(0, 0, 0);
         }
 
         HitRecord rec;
@@ -99,10 +108,11 @@ private:
         {
             Ray scattered;
             Color attenuation;
-            if (rec.mat->scatter(ray, rec, attenuation, scattered)){
-                return attenuation * ray_color(scattered, depth-1, world);
-            } 
-            return Color(0,0,0);
+            if (rec.mat->scatter(ray, rec, attenuation, scattered))
+            {
+                return attenuation * ray_color(scattered, depth - 1, world);
+            }
+            return Color(0, 0, 0);
         }
 
         Vector3 unitDirection = unit_vector(ray.direction());
