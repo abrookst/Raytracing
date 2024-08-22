@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "hittable.h"
 #include "common.h"
+#include "hittable.h"
 
 class HittableList : public Hittable {
     public:

@@ -51,12 +51,20 @@ public:
         return std::sqrt(length_squared());
     }
 
-    static Vector3 random() {
+    static Vector3 random()
+    {
         return Vector3(random_float(), random_float(), random_float());
     }
 
-    static Vector3 random(float min, float max) {
-        return Vector3(random_float(min,max), random_float(min,max), random_float(min,max));
+    static Vector3 random(float min, float max)
+    {
+        return Vector3(random_float(min, max), random_float(min, max), random_float(min, max));
+    }
+
+    bool near_zero() const
+    {
+        float s = 1e-8;
+        return (std::fabs(v[0]) < s) && (std::fabs(v[1]) < s) && (std::fabs(v[2]) < s);
     }
 };
 
@@ -114,24 +122,40 @@ inline Vector3 unit_vector(const Vector3 &vec)
     return vec / vec.length();
 }
 
-inline Vector3 random_in_unit_sphere() {
-    while (true) {
-        Vector3 p = Vector3::random(-1,1);
+inline Vector3 random_in_unit_sphere()
+{
+    while (true)
+    {
+        Vector3 p = Vector3::random(-1, 1);
         if (p.length_squared() < 1)
             return p;
     }
 }
 
-inline Vector3 random_unit_vector() {
+inline Vector3 random_unit_vector()
+{
     return unit_vector(random_in_unit_sphere());
 }
 
-inline Vector3 random_on_hemisphere(const Vector3& normal) {
+inline Vector3 random_on_hemisphere(const Vector3 &normal)
+{
     Vector3 onUnitSphere = random_unit_vector();
     if (dot(onUnitSphere, normal) > 0.0) // In the same hemisphere as the normal
         return onUnitSphere;
     else
         return -onUnitSphere;
+}
+
+inline Vector3 reflect(const Vector3 &v, const Vector3 &n)
+{
+    return v - 2 * dot(v, n) * n;
+}
+
+inline Vector3 refract(const Vector3& uv, const Vector3& n, double etaiOverEtat) {
+    auto cosTheta = std::fmin(dot(-uv, n), 1.0);
+    Vector3 rOutPerp =  etaiOverEtat * (uv + cosTheta*n);
+    Vector3 rOutParallel = -std::sqrt(std::fabs(1.0 - rOutPerp.length_squared())) * n;
+    return rOutPerp + rOutParallel;
 }
 
 #endif

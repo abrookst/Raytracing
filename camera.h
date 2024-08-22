@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "hittable.h"
+#include "material.h"
 
 class Camera
 {
@@ -20,7 +21,7 @@ public:
 
         for (uint16_t j = 0; j < imageHeight; j++)
         {
-            //std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
+            std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
             for (uint16_t i = 0; i < imageWidth; i++)
             {
                 Color pixel_color(0,0,0);
@@ -96,9 +97,12 @@ private:
         HitRecord rec;
         if (world.hit(ray, Interval(0.001, infinity), rec))
         {
-            
-            Vector3 direction = rec.normal + random_unit_vector();;
-            return 0.5 * ray_color(Ray(rec.p, direction), depth-1, world);
+            Ray scattered;
+            Color attenuation;
+            if (rec.mat->scatter(ray, rec, attenuation, scattered)){
+                return attenuation * ray_color(scattered, depth-1, world);
+            } 
+            return Color(0,0,0);
         }
 
         Vector3 unitDirection = unit_vector(ray.direction());
