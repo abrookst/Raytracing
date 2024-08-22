@@ -14,6 +14,9 @@ public:
     uint16_t samplesPerPixel = 10;
     uint16_t maxDepth = 10;
     double fov = 90;
+    Point3 lookFrom = Point3(0,0,0);
+    Point3 lookAt = Point3(0,0,-1);
+    Vector3 relativeUp = Vector3(0,1,0);
 
     void render(const std::string filename, const Hittable &world)
     {
@@ -48,6 +51,7 @@ private:
     Point3 pixel00Loc;
     Vector3 pixelDeltaU;
     Vector3 pixelDeltaV;
+    Vector3 u,v,w;
 
     void initialize()
     {
@@ -57,22 +61,26 @@ private:
         pixelSamplesScale = 1.0f / samplesPerPixel;
 
         // Camera
-        cameraCenter = Point3(0, 0, 0);
+        cameraCenter = lookFrom;
         float theta = degrees_to_radians(fov);
         float h = std::tan(theta / 2);
-        float focalLength = 1.0;
+        float focalLength = (lookFrom - lookAt).length();
         float viewportHeight = 2.0 * h * focalLength;
         float viewportWidth = viewportHeight * (float(imageWidth) / imageHeight);
 
+        w = unit_vector(lookFrom - lookAt);
+        u = unit_vector(cross(relativeUp,w));
+        v = cross(w,u);
+
         // Viewport
-        Vector3 viewportU = Vector3(viewportWidth, 0, 0);
-        Vector3 viewportV = Vector3(0, -viewportHeight, 0);
+        Vector3 viewportU = viewportWidth * u;
+        Vector3 viewportV = viewportHeight * -v;
 
         // Pixel Delta
         pixelDeltaU = viewportU / imageWidth;
         pixelDeltaV = viewportV / imageHeight;
         // starting pixel
-        Point3 viewportUpperLeft = cameraCenter - Vector3(0, 0, focalLength) - viewportU / 2 - viewportV / 2;
+        Point3 viewportUpperLeft = cameraCenter - (focalLength * w) - viewportU / 2 - viewportV / 2;
         pixel00Loc = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
     }
 

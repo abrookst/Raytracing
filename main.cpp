@@ -37,11 +37,12 @@ int main() {
     mainView.aspectRatio = 16.0f / 9.0f;
     mainView.imageWidth = 640;
     mainView.samplesPerPixel = 100;
-    mainView.maxDepth = 10;
+    mainView.maxDepth = 30;
     mainView.fov = 90;
 
     mainView.render("main.ppm", world);
-    mainView.fov = 60;
+    mainView.lookFrom = Point3(-2,2, 2);
+    mainView.lookAt = Point3(-1,-1,-1);
     mainView.render("second.ppm", world);
 
 }
