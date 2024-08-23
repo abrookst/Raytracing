@@ -7,8 +7,8 @@ Current Features:
 - Anti-Aliasing
 - Focus Blur
 <p float="left">
-  <img src="https://github.com/abrookst/raycasting/blob/main/main1.png?raw=true" width="250" alt="A view a bunch of smaller scattered balls infront of 3 larger balls, all with a varriety of materials"/>
-  <img src="https://github.com/abrookst/raycasting/blob/main/main2.png?raw=true" width="250" alt="Another view, of " /> 
+  <img src="https://github.com/abrookst/raytracing/blob/main/main1.png?raw=true" width="250" alt="A view a bunch of smaller scattered balls infront of 3 larger balls, all with a varriety of materials"/>
+  <img src="https://github.com/abrookst/raytracing/blob/main/main2.png?raw=true" width="250" alt="Another view, of 5 balls, two metal, two glass, and one matte." /> 
 </p>
 
 Research Sources: 
