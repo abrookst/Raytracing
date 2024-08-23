@@ -1,5 +1,6 @@
 #include "common.h"
-#include "vector3.h"
+
+#include "bvh.h"
 #include "sphere.h"
 #include "camera.h"
 #include "hittableList.h"
@@ -49,7 +50,6 @@ int main() {
 
     shared_ptr<Material> materialLarge3 = make_shared<Dielectric>(Color(0.3, 0.2, 0.8), 1.5);
     world.add(make_shared<Sphere>(Point3(-2,1,2.3), 1, materialLarge3));
-    
 
     // Camera
     Camera mainView;
@@ -88,5 +88,6 @@ int main() {
     mainView.lookFrom = Point3(0,0,0);
     mainView.fov = 90;
     mainView.focusDist = 1;
+
     mainView.render("main2.ppm", world2);
 }

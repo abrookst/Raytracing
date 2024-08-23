@@ -2,7 +2,9 @@
 #define CAMERA_H
 
 #include "common.h"
+#include "bvh.h"
 #include "hittable.h"
+#include "hittableList.h"
 #include "material.h"
 #include <fstream>
 
@@ -23,8 +25,9 @@ public:
     float focusDist = 10;
 
 
-    void render(const std::string filename, const Hittable &world)
+    void render(const std::string filename, HittableList& world)
     {
+        world = HittableList(make_shared<BVHNode>(world));
         initialize();
 
         std::ofstream ofs(filename, std::ios::binary);

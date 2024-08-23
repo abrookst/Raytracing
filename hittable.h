@@ -2,6 +2,7 @@
 #define HITTABLE_H
 
 #include "common.h"
+
 #include "aabb.h"
 
 class Material;
@@ -15,9 +16,6 @@ class HitRecord {
         bool frontFace;
 
     void set_face_normal(const Ray& r, const Vector3& outwardNormal) {
-        // Sets the hit record normal vector.
-        // NOTE: the parameter `outward_normal` is assumed to have unit length.
-
         frontFace = dot(r.direction(), outwardNormal) < 0;
         normal = frontFace ? outwardNormal : -outwardNormal;
     }

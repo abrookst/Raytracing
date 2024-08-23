@@ -1,4 +1,4 @@
-#ifndef AAB_H
+#ifndef AABB_H
 #define AABB_H
 
 #include "common.h"
@@ -43,10 +43,10 @@ public:
         for (int axis = 0; axis < 3; axis++)
         {
             const Interval& ax = axis_interval(axis);
-            const double adinv = 1.0 / rayDir[axis];
+            const float adinv = 1.0 / rayDir[axis];
 
-            auto t0 = (ax.min - rayOrig[axis]) * adinv;
-            auto t1 = (ax.max - rayOrig[axis]) * adinv;
+            float t0 = (ax.min - rayOrig[axis]) * adinv;
+            float t1 = (ax.max - rayOrig[axis]) * adinv;
 
             if (t0 < t1)
             {
@@ -68,6 +68,20 @@ public:
         }
         return true;
     }
+
+    int longest_axis() const {
+        // Returns the index of the longest axis of the bounding box.
+
+        if (x.size() > y.size())
+            return x.size() > z.size() ? 0 : 2;
+        else
+            return y.size() > z.size() ? 1 : 2;
+    }
+
+    static const AABB empty, universe;
 };
+
+const AABB AABB::empty    = AABB(Interval::empty,    Interval::empty,    Interval::empty);
+const AABB AABB::universe = AABB(Interval::universe, Interval::universe, Interval::universe);
 
 #endif
