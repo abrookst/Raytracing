@@ -60,12 +60,12 @@ class Dielectric : public Material{
 
         bool scatter(const Ray& rIn, const HitRecord& rec, Color& attenuation, Ray& scattered) const override {
             attenuation = (Color(1.0, 1.0, 1.0) / 2) + (albedo / 2);
-            double ri = rec.frontFace ? (1.0/refractionIndex) : refractionIndex;
+            float ri = rec.frontFace ? (1.0/refractionIndex) : refractionIndex;
 
             Vector3 unitDirection = unit_vector(rIn.direction());
 
             float cosTheta = std::fmin(dot(-unitDirection, rec.normal), 1.0);
-            double sinTheta = std::sqrt(1.0 - cosTheta*cosTheta);
+            float sinTheta = std::sqrt(1.0 - cosTheta*cosTheta);
 
             bool cannotRefract = ri * sinTheta > 1.0;
             Vector3 direction;

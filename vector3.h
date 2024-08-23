@@ -122,6 +122,14 @@ inline Vector3 unit_vector(const Vector3 &vec)
     return vec / vec.length();
 }
 
+inline Vector3 random_in_unit_disk() {
+    while (true) {
+        Vector3 p = Vector3(random_float(-1,1), random_float(-1,1), 0);
+        if (p.length_squared() < 1)
+            return p;
+    }
+}
+
 inline Vector3 random_in_unit_sphere()
 {
     while (true)
@@ -151,8 +159,8 @@ inline Vector3 reflect(const Vector3 &v, const Vector3 &n)
     return v - 2 * dot(v, n) * n;
 }
 
-inline Vector3 refract(const Vector3& uv, const Vector3& n, double etaiOverEtat) {
-    auto cosTheta = std::fmin(dot(-uv, n), 1.0);
+inline Vector3 refract(const Vector3& uv, const Vector3& n, float etaiOverEtat) {
+    float cosTheta = std::fmin(dot(-uv, n), 1.0);
     Vector3 rOutPerp =  etaiOverEtat * (uv + cosTheta*n);
     Vector3 rOutParallel = -std::sqrt(std::fabs(1.0 - rOutPerp.length_squared())) * n;
     return rOutPerp + rOutParallel;
