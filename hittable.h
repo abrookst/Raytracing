@@ -2,6 +2,7 @@
 #define HITTABLE_H
 
 #include "common.h"
+#include "aabb.h"
 
 class Material;
 
@@ -26,6 +27,7 @@ class Hittable {
     public:
         virtual ~Hittable() = default;
         virtual bool hit(const Ray& r, Interval rayT, HitRecord& rec) const = 0;
+        virtual AABB bounding_box() const = 0;
 };
 
 #endif

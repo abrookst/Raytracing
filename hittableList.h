@@ -15,8 +15,11 @@ class HittableList : public Hittable {
 
         void clear() { objs.clear(); }
 
+        AABB bounding_box() const override { return bbox; }
+
         void add(shared_ptr<Hittable> obj){
             objs.push_back(obj);
+            bbox = AABB(bbox, obj->bounding_box());
         }
 
         bool hit(const Ray& r, Interval rayT, HitRecord& rec)  const override {
@@ -33,6 +36,8 @@ class HittableList : public Hittable {
             }
             return hitAnything;
         }
+        private:
+        AABB bbox;
 
 };
 
