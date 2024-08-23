@@ -15,26 +15,27 @@ int main() {
     Interval heightInterval(0.2, .6);
     for (int a = -1; a < 4; a++) {
         for (int b = -11; b < 11; b++) {
-            float choose_mat = random_float();
-            Point3 center(a + random_float(), 0.2, b + random_float());
-            shared_ptr<Material> sphere_material;
+            float chooseMat = random_float();
+            Point3 center1(a + random_float(), 0.2, b + random_float());
+            Point3 center2 = center1 + Vector3(0, random_float(0,.5), 0);
+            shared_ptr<Material> sphereMaterial;
 
-            if (choose_mat < 0.8) {
+            if (chooseMat < 0.8) {
                 // diffuse
                 Color albedo = Color::random() * Color::random();
-                sphere_material = make_shared<Lambertian>(albedo);
-                world.add(make_shared<Sphere>(center, 0.2, sphere_material));
-            } else if (choose_mat < 0.95) {
+                sphereMaterial = make_shared<Lambertian>(albedo);
+                world.add(make_shared<Sphere>(center1, center2, 0.2, sphereMaterial));
+            } else if (chooseMat < 0.95) {
                 // metal
                 Color albedo = Color::random(0.5, 1);
                 float fuzz = random_float(0, 0.5);
-                sphere_material = make_shared<Metal>(albedo, fuzz);
-                world.add(make_shared<Sphere>(center, 0.2, sphere_material));
+                sphereMaterial = make_shared<Metal>(albedo, fuzz);
+                world.add(make_shared<Sphere>(center1, center2, 0.2, sphereMaterial));
             } else {
                 // glass
                 Color albedo = Color::random(0.5, 1);
-                sphere_material = make_shared<Dielectric>(albedo, 1.5);
-                world.add(make_shared<Sphere>(center, 0.2, sphere_material));
+                sphereMaterial = make_shared<Dielectric>(albedo, 1.5);
+                world.add(make_shared<Sphere>(center1, center2, 0.2, sphereMaterial));
             }
         
         }
@@ -53,16 +54,16 @@ int main() {
     // Camera
     Camera mainView;
     mainView.aspectRatio = 16.0f / 9.0f;
-    mainView.imageWidth = 1920;
-    mainView.samplesPerPixel = 50;
-    mainView.maxDepth = 20;
+    mainView.imageWidth = 400;
+    mainView.samplesPerPixel = 100;
+    mainView.maxDepth = 50;
     mainView.fov = 40;
     mainView.defocusAngle = 0.6;
     mainView.focusDist = 6.5;
     mainView.lookFrom = Point3(3,1,4);
     mainView.lookAt = Point3(-2,1.5,0);
     mainView.relativeUp = Vector3(0,1,0);
-    //mainView.render("main.ppm", world);
+    mainView.render("main1.ppm", world);
 
     HittableList world2;
 
@@ -87,5 +88,5 @@ int main() {
     mainView.lookFrom = Point3(0,0,0);
     mainView.fov = 90;
     mainView.focusDist = 1;
-    mainView.render("second.ppm", world2);
+    mainView.render("main2.ppm", world2);
 }

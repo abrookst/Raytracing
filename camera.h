@@ -37,13 +37,13 @@ public:
             std::clog << "\rScanlines remaining for " << filename << ": " << (imageHeight - j) << ' ' << std::flush;
             for (uint16_t i = 0; i < imageWidth; i++)
             {
-                Color pixel_color(0, 0, 0);
+                Color pixelColor(0, 0, 0);
                 for (int sample = 0; sample < samplesPerPixel; sample++)
                 {
                     Ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, maxDepth, world);
+                    pixelColor += ray_color(r, maxDepth, world);
                 }
-                write_color(ofs, pixelSamplesScale * pixel_color);
+                write_color(ofs, pixelSamplesScale * pixelColor);
             }
         }
         std::clog << "\rRender for " << filename << " has been completed." << std::endl;
@@ -100,12 +100,13 @@ private:
         // point around the pixel location i, j.
 
         Vector3 offset = sample_square();
-        Vector3 pixel_sample = pixel00Loc + ((i + offset.x()) * pixelDeltaU) + ((j + offset.y()) * pixelDeltaV);
+        Vector3 pixelSample = pixel00Loc + ((i + offset.x()) * pixelDeltaU) + ((j + offset.y()) * pixelDeltaV);
 
-        Point3 ray_origin = (defocusAngle <= 0) ? cameraCenter : defocus_disk_sample();
-        Vector3 ray_direction = pixel_sample - ray_origin;
+        Point3 rayOrigin = (defocusAngle <= 0) ? cameraCenter : defocus_disk_sample();
+        Vector3 rayDirection = pixelSample - rayOrigin;
+        float rayTime = random_float();
 
-        return Ray(ray_origin, ray_direction);
+        return Ray(rayOrigin, rayDirection, rayTime);
     }
 
     Vector3 sample_square() const
