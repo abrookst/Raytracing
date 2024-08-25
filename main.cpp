@@ -5,13 +5,13 @@
 #include "camera.h"
 #include "hittableList.h"
 #include "material.h"
+#include "texture.h"
 
 int main() {
     // World
     HittableList world;
-
-    shared_ptr<Material> materialGround = make_shared<Lambertian>(Color(0.8, 0.8, 0.8));
-    world.add(make_shared<Sphere>(Point3(0,-1000,0), 1000, materialGround));
+    shared_ptr<Texture> checker = make_shared<CheckerTexture>(0.32, Color(.2, .3, .1), Color(.9, .9, .9));
+    world.add(make_shared<Sphere>(Point3(0,-1000,0), 1000, make_shared<Lambertian>(checker)));
 
     Interval heightInterval(0.2, .6);
     for (int a = -1; a < 4; a++) {
@@ -76,7 +76,7 @@ int main() {
     shared_ptr<Material> materialSmall2 = make_shared<Dielectric>(Color(0.34, 0.31, 0.54), 1.5f);
     shared_ptr<Material> materialSmallest2 = make_shared<Dielectric>(Color(0.34, 0.61, 0.34), 2.4f);
 
-    world2.add(make_shared<Sphere>(Point3(0,-100.5,-1), 100, materialGround));
+    world2.add(make_shared<Sphere>(Point3(0,-100.5,-1), 100,  make_shared<Lambertian>(checker)));
     world2.add(make_shared<Sphere>(Point3( 0.0, 0.25, -1.5),   0.75, materialLarge));
 
     world2.add(make_shared<Sphere>(Point3(-.9, -.25, -1.1),   0.25, materialSmall1));
