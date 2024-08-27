@@ -38,29 +38,31 @@ class Lambertian : public Material{
 
 class Metal : public Material{
     public:
-        Metal(const Color& alb, float fuzz): albedo(alb), fuzz(fuzz) {}
+        Metal(const Color& alb, float fuzz) : tex(make_shared<SolidColor>(alb)), fuzz(fuzz) {}
+        Metal(shared_ptr<Texture> tex, float fuzz) : tex(tex), fuzz(fuzz) {}
 
         bool scatter(const Ray& rIn, const HitRecord& rec, Color& attenuation, Ray& scattered) const override {
             Vector3 reflected = reflect(rIn.direction(), rec.normal);
             reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
             scattered = Ray(rec.p, reflected, rIn.time());
-            attenuation = albedo;
+            attenuation = tex->value(rec.u, rec.v, rec.p);
             return (dot(scattered.direction(), rec.normal) > 0);
 
         }
 
     private:
-        Color albedo;
+        shared_ptr<Texture> tex;
         float fuzz;
 
 };
 
 class Dielectric : public Material{
     public:
-        Dielectric(const Color& alb, float refInd): albedo(alb), refractionIndex(refInd) {}
+        Dielectric(const Color& alb, float refInd): tex(make_shared<SolidColor>(alb)), refractionIndex(refInd) {}
+        Dielectric(shared_ptr<Texture> tex, float refInd): tex(tex), refractionIndex(refInd) {}
 
         bool scatter(const Ray& rIn, const HitRecord& rec, Color& attenuation, Ray& scattered) const override {
-            attenuation = (Color(1.0, 1.0, 1.0) / 2) + (albedo / 2);
+            attenuation = (Color(1.0, 1.0, 1.0) / 2) + (tex->value(rec.u, rec.v, rec.p) / 2);
             float ri = rec.frontFace ? (1.0/refractionIndex) : refractionIndex;
 
             Vector3 unitDirection = unit_vector(rIn.direction());
@@ -84,7 +86,7 @@ class Dielectric : public Material{
         }
 
     private:
-        Color albedo;
+        shared_ptr<Texture> tex;
         float refractionIndex;
 
         static float reflectance(float cosine, float refractionIndex) {

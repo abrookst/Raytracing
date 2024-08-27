@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+#include "img.h"
+#include "perlin.h"
+
 class Texture {
     public:
         virtual ~Texture() =  default;
@@ -44,6 +47,41 @@ class CheckerTexture : public Texture {
     float invScale;
     shared_ptr<Texture> even;
     shared_ptr<Texture> odd;
+};
+
+class ImageTexture : public Texture {
+    public: 
+    ImageTexture(const char* filename) : img(filename) {}
+
+    Color value(float u, float v, [[maybe_unused]]const Point3& p) const override {
+        if (img.height() < 0) return Color(0,1,1);
+
+        u = Interval(0,1).clamp(u);
+        v = 1.0 - Interval(0,1).clamp(v);
+
+        int i = int(u * img.width());
+        int j = int(v * img.height());
+        const unsigned char* pixel = img.pixel_data(i,j);
+
+        float colorScale = 1.0 / 255.0;
+        return Color(colorScale * pixel[0], colorScale * pixel[1], colorScale * pixel[2]);
+
+    }
+
+    private:
+    Image img;
+};
+
+class NoiseTexture : public Texture {
+    public:
+    NoiseTexture(float scale): scale(scale) {}
+    
+    Color value([[maybe_unused]]float u, [[maybe_unused]]float v, const Point3& p) const override {
+        return Color(1,1,1) * 0.5 * (1.0 + noise.noise(scale * p));
+    }
+    private:
+    float scale;
+    Perlin noise;
 };
 
 #endif
