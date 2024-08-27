@@ -15,6 +15,7 @@ public:
     uint16_t imageWidth = 100;
     uint16_t samplesPerPixel = 10;
     uint16_t maxDepth = 10;
+    Color background = Color(0.70, 0.80, 1.00);
 
     float fov = 90;
     Point3 lookFrom = Point3(0,0,0);
@@ -131,20 +132,19 @@ private:
         }
 
         HitRecord rec;
-        if (world.hit(ray, Interval(0.001, infinity), rec))
-        {
-            Ray scattered;
-            Color attenuation;
-            if (rec.mat->scatter(ray, rec, attenuation, scattered))
-            {
-                return attenuation * ray_color(scattered, depth - 1, world);
-            }
-            return Color(0, 0, 0);
-        }
+        if (!world.hit(ray, Interval(0.001, infinity), rec))
+            return background;
 
-        Vector3 unitDirection = unit_vector(ray.direction());
-        float a = 0.5 * (unitDirection.y() + 1.0);
-        return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
+        Ray scattered;
+        Color attenuation;
+        Color colorFromEmission = rec.mat->emitted(rec.u, rec.v, rec.p);
+
+        if (!rec.mat->scatter(ray, rec, attenuation, scattered))
+            return colorFromEmission;
+
+        Color colorFromScatter = attenuation * ray_color(scattered, depth-1, world);
+
+        return colorFromEmission + colorFromScatter;
     }
 };
 

@@ -11,6 +11,10 @@ class Material {
     public:
         virtual ~Material() = default;
 
+        virtual Color emitted([[maybe_unused]] float u, [[maybe_unused]] float v, [[maybe_unused]] const Point3& p) const {
+            return Color(0,0,0);
+        }
+
         virtual bool scatter(const Ray& rIn, const HitRecord& rec, Color& attenuation, Ray& scattered) const = 0;
 };
 
@@ -96,6 +100,23 @@ class Dielectric : public Material{
             return r0 + (1-r0)*std::pow((1 - cosine),5);
         }
 
+};
+
+class DiffuseLight : public Material {
+  public:
+    DiffuseLight(shared_ptr<Texture> tex) : tex(tex) {}
+    DiffuseLight(const Color& emit) : tex(make_shared<SolidColor>(emit)) {}
+
+    Color emitted(float u, float v, const Point3& p) const override {
+        return tex->value(u, v, p);
+    }
+
+    bool scatter([[maybe_unused]]const Ray& rIn, [[maybe_unused]]const HitRecord& rec, [[maybe_unused]]Color& attenuation, [[maybe_unused]]Ray& scattered) const override {
+        return false;
+    }
+
+  private:
+    shared_ptr<Texture> tex;
 };
 
 #endif

@@ -2,6 +2,7 @@
 
 #include "bvh.h"
 #include "sphere.h"
+#include "quad.h"
 #include "camera.h"
 #include "hittableList.h"
 #include "material.h"
@@ -143,35 +144,68 @@ void texture_test()
     cam.render("texture_test.ppm", world);
 }
 
-void noise_sphere(){
+void noise_sphere()
+{
     HittableList world;
     shared_ptr<Texture> perlinTexture = make_shared<NoiseTexture>(4);
 
-    world.add(make_shared<Sphere>(Point3(0,-1000,0), 1000, make_shared<Lambertian>(perlinTexture)));
-    world.add(make_shared<Sphere>(Point3(0,2,0), 2, make_shared<Lambertian>(perlinTexture)));
+    world.add(make_shared<Sphere>(Point3(0, -1000, 0), 1000, make_shared<Lambertian>(perlinTexture)));
+    world.add(make_shared<Sphere>(Point3(0, 2, 0), 2, make_shared<Lambertian>(perlinTexture)));
 
     Camera cam;
 
-    cam.aspectRatio      = 16.0 / 9.0;
-    cam.imageWidth       = 400;
+    cam.aspectRatio = 16.0 / 9.0;
+    cam.imageWidth = 400;
     cam.samplesPerPixel = 100;
-    cam.maxDepth         = 50;
+    cam.maxDepth = 50;
 
-    cam.fov     = 20;
-    cam.lookFrom = Point3(13,2,3);
-    cam.lookAt   = Point3(0,0,0);
-    cam.relativeUp      = Vector3(0,1,0);
+    cam.fov = 20;
+    cam.lookFrom = Point3(13, 2, 3);
+    cam.lookAt = Point3(0, 0, 0);
+    cam.relativeUp = Vector3(0, 1, 0);
 
     cam.defocusAngle = 0;
 
     cam.render("noise_sphere.ppm", world);
+}
 
+void cornell_box()
+{
+    HittableList world;
 
+    shared_ptr<Material> red = make_shared<Lambertian>(Color(.65, .05, .05));
+    shared_ptr<Material> white = make_shared<Lambertian>(Color(.73, .73, .73));
+    shared_ptr<Material> green = make_shared<Lambertian>(Color(.12, .45, .15));
+    shared_ptr<Material> light = make_shared<DiffuseLight>(Color(15, 15, 15));
+
+    world.add(make_shared<Quad>(Point3(555, 0, 0), Vector3(0, 555, 0), Vector3(0, 0, 555), green));
+    world.add(make_shared<Quad>(Point3(0, 0, 0), Vector3(0, 555, 0), Vector3(0, 0, 555), red));
+    world.add(make_shared<Quad>(Point3(343, 554, 332), Vector3(-130, 0, 0), Vector3(0, 0, -105), light));
+    world.add(make_shared<Quad>(Point3(0, 0, 0), Vector3(555, 0, 0), Vector3(0, 0, 555), white));
+    world.add(make_shared<Quad>(Point3(555, 555, 555), Vector3(-555, 0, 0), Vector3(0, 0, -555), white));
+    world.add(make_shared<Quad>(Point3(0, 0, 555), Vector3(555, 0, 0), Vector3(0, 555, 0), white));
+
+    Camera cam;
+
+    cam.aspectRatio = 1.0;
+    cam.imageWidth = 600;
+    cam.samplesPerPixel = 200;
+    cam.maxDepth = 50;
+    cam.background = Color(0, 0, 0);
+
+    cam.fov = 40;
+    cam.lookFrom = Point3(278, 278, -800);
+    cam.lookAt = Point3(278, 278, 0);
+    cam.relativeUp = Vector3(0, 1, 0);
+
+    cam.defocusAngle = 0;
+
+    cam.render("cornell.ppm", world);
 }
 
 int main()
 {
-    switch (4)
+    switch (5)
     {
     case 1:
         angled_balls();
@@ -184,6 +218,9 @@ int main()
         break;
     case 4:
         noise_sphere();
+        break;
+    case 5:
+        cornell_box();
         break;
     }
 }
