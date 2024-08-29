@@ -12,6 +12,7 @@ Current Features:
 </p>
 
 Research Sources: 
+- [Physically Based Rendering: From Theory to Implementation](https://www.pbr-book.org/)
 - [Raytracing in One Weekend Series](https://raytracing.github.io/)
 - [Medium - Building your very own path tracer from scratch](https://medium.com/everythingcg/building-your-very-own-path-tracer-from-scratch-c-4d9d3ce5fea4)
 - [Path Tracing Wikipedia](https://en.wikipedia.org/wiki/Path_tracing)
