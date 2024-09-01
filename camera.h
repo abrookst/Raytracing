@@ -124,7 +124,7 @@ private:
         return cameraCenter + (p[0] * defocusDiskU) + (p[1] * defocusDiskV);
     }
 
-    Color ray_color(const Ray &ray, uint16_t depth, const Hittable &world)
+    Color ray_color(const Ray &ray, uint16_t depth, Hittable &world)
     {
         if (depth <= 0)
         {
