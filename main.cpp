@@ -258,7 +258,7 @@ void final_scene()
     shared_ptr<Texture> mars = make_shared<ImageTexture>("mars.jpg");
     world.add(make_shared<Sphere>(Point3(430, 200, 320), 100, make_shared<Lambertian>(mars)));
 
-    world.add(make_shared<Sphere>(Point3(630, 400, 320), Point3(630, 350, 320), 35, make_shared<Metal>(Color(0.8, 0.3, 0.2), 0.0)));
+    world.add(make_shared<Sphere>(Point3(630, 400, 320), Point3(630, 350, 320), 70, make_shared<Metal>(Color(0.8, 0.3, 0.2), 0.0)));
 
     shared_ptr<Texture> pertext = make_shared<NoiseTexture>(0.2);
     world.add(make_shared<Sphere>(Point3(220,380,300), 100, make_shared<Lambertian>(pertext)));
@@ -270,9 +270,9 @@ void final_scene()
     Camera cam;
 
     cam.aspectRatio = 16.0 / 9.0;
-    cam.imageWidth = 1920;
-    cam.samplesPerPixel = 500;
-    cam.maxDepth = 10;
+    cam.imageWidth = 1280;
+    cam.samplesPerPixel = 4000;
+    cam.maxDepth = 25;
     cam.background = Color(0, 0, 0);
 
     cam.fov = 40;

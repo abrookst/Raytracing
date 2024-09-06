@@ -6,9 +6,15 @@ Current Features:
 - Adjustable camera
 - Anti-Aliasing
 - Focus Blur
+- Motion Blur
+- BVH Optimization
+- Textures
+- Perlin Noise
+- Light Objects
+- Fog
 <p float="left">
   <img src="https://github.com/abrookst/raytracing/blob/main/main1.png?raw=true" width="250" alt="A view a bunch of smaller scattered balls infront of 3 larger balls, all with a varriety of materials"/>
-  <img src="https://github.com/abrookst/raytracing/blob/main/main2.png?raw=true" width="250" alt="Another view, of 5 balls, two metal, two glass, and one matte." /> 
+  <img src="https://github.com/abrookst/raytracing/blob/main/final.png?raw=true" width="250" alt="" /> 
 </p>
 
 Research Sources: 
