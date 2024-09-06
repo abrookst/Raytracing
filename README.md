@@ -13,8 +13,8 @@ Current Features:
 - Light Objects
 - Fog
 <p float="left">
-  <img src="https://github.com/abrookst/raytracing/blob/main/main1.png?raw=true" width="250" alt="A view a bunch of smaller scattered balls infront of 3 larger balls, all with a varriety of materials"/>
-  <img src="https://github.com/abrookst/raytracing/blob/main/final.png?raw=true" width="250" alt="" /> 
+  <img src="https://github.com/abrookst/raytracing/blob/main/main1.png?raw=true" width="500" alt="A view a bunch of smaller scattered balls infront of 3 larger balls, all with a varriety of materials"/>
+  <img src="https://github.com/abrookst/raytracing/blob/main/final.png?raw=true" width="500" alt="" /> 
 </p>
 
 Research Sources: 
