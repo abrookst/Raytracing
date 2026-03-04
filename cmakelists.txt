@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.10)
+project(Raytracing)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Add SDL2 path
+set(SDL2_DIR "C:/cpplibraries/SDL2-2.30.3/cmake")
+list(APPEND CMAKE_PREFIX_PATH "C:/cpplibraries/SDL2-2.30.3")
+find_package(SDL2 REQUIRED)
+
+# Add ImGui source files
+set(IMGUI_DIR "C:/cpplibraries/imgui-1.90.8")
+set(IMGUI_SOURCES
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_sdl2.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_sdlrenderer2.cpp
+)
+
+# Create executable
+add_executable(${PROJECT_NAME} main.cpp ${IMGUI_SOURCES})
+
+# Include directories
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    ${SDL2_INCLUDE_DIRS}
+    ${IMGUI_DIR}
+    ${IMGUI_DIR}/backends
+)
+
+# Link libraries
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
